@@ -26,8 +26,8 @@ public class USMapWithCities3 {
 		setupCanvas();
 		File1();
 		File2();
-		drawBlue();
 		drawSmallCities();
+		drawBlue();
 	}
 
 	public void setupCanvas() {
@@ -38,7 +38,7 @@ public class USMapWithCities3 {
 	}
 
 	public void File1 () {
-		File e = new File("src/cities");
+		File e = new File("cities");
 
 		try {
 			Scanner f = new Scanner(e);
@@ -52,16 +52,8 @@ public class USMapWithCities3 {
 		}		
 	}	
 
-	public void drawSmallCities() {
-		StdDraw.setPenRadius(0.006);
-		StdDraw.setPenColor(128, 128, 128);
-		for (int i = 0; i < allCitiesNames.size(); i++) {
-			StdDraw.point(allCitiesY.get(i), allCitiesX.get(i));
-		}
-	}
-
 	public void File2 () {
-		File e = new File("src/bigCities");
+		File e = new File(bigCities");
 
 		try {
 			Scanner f = new Scanner(e);
@@ -81,7 +73,15 @@ public class USMapWithCities3 {
 		} catch (Exception k) {
 			System.out.println("ERROR in reading population file" + k);
 		}		
-	}	
+	}
+
+	public void drawSmallCities() {
+		StdDraw.setPenRadius(0.006);
+		StdDraw.setPenColor(128, 128, 128);
+		for (int i = 0; i < allCitiesNames.size(); i++) {
+			StdDraw.point(allCitiesY.get(i), allCitiesX.get(i));
+		}
+	}
 
 	public void drawBlue() {
 		Collections.sort(bigCityObjects);

@@ -1,0 +1,118 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
+import java.util.*;
+
+/**
+ *	File Uitilies for reading and writing
+ *	
+ *  @author Vibha Raghvendran
+ *	@since August 23 2024
+ */
+
+public class USMapWithCities3 {
+
+	ArrayList <Double> allCitiesX = new ArrayList <Double> ();
+	ArrayList <Double> allCitiesY = new ArrayList <Double> ();
+	ArrayList <String> allCitiesNames = new ArrayList <String> ();
+
+	ArrayList<BigCityObject> bigCityObjects = new ArrayList<>();
+
+	public USMapWithCities3 () {
+		setupCanvas();
+		File1();
+		File2();
+		drawBlue();
+		drawSmallCities();
+	}
+
+	public void setupCanvas() {
+		StdDraw.setTitle("USMap");
+		StdDraw.setCanvasSize(900, 512);
+		StdDraw.setXscale(128.0, 65.0);
+		StdDraw.setYscale(22.0, 52.0);
+	}
+
+	public void File1 () {
+		File e = new File("src/cities");
+
+		try {
+			Scanner f = new Scanner(e);
+			while (f.hasNext()) {				
+				allCitiesX.add(f.nextDouble());		
+				allCitiesY.add(f.nextDouble());	
+				allCitiesNames.add(f.nextLine());
+			}
+		} catch (Exception k) {
+			System.out.println("ERROR in all city read file - " + k);
+		}		
+	}	
+
+	public void drawSmallCities() {
+		StdDraw.setPenRadius(0.006);
+		StdDraw.setPenColor(128, 128, 128);
+		for (int i = 0; i < allCitiesNames.size(); i++) {
+			StdDraw.point(allCitiesY.get(i), allCitiesX.get(i));
+		}
+	}
+
+	public void File2 () {
+		File e = new File("src/bigCities");
+
+		try {
+			Scanner f = new Scanner(e);
+			Pattern orgDelimiter = f.delimiter();
+			while (f.hasNext()) {	
+				int i = f.nextInt();
+
+				f.useDelimiter(",");
+				String cityName = f.next();
+				f.useDelimiter(orgDelimiter);
+				f.next();
+				String stateName = f.next();
+
+				BigCityObject o = new BigCityObject(cityName + ", " + stateName, Integer.parseInt(f.next()));
+				bigCityObjects.add(o);
+			}
+		} catch (Exception k) {
+			System.out.println("ERROR in reading population file" + k);
+		}		
+	}	
+
+	public void drawBlue() {
+		Collections.sort(bigCityObjects);
+
+		for (int i = 0; i < bigCityObjects.size(); i++) {
+			boolean found = false;
+			BigCityObject bco = bigCityObjects.get(i);
+
+			int cityIndex = 0;
+			for (; cityIndex < allCitiesNames.size(); cityIndex++) {
+				if ( bco.getBigCityName().equals(allCitiesNames.get(cityIndex))) {
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
+				StdDraw.setPenRadius(0.6*(Math.sqrt(bco.getBigCityPop())/18500));
+				if (bigCityObjects.size() - i - 1 < 10) {
+					StdDraw.setPenColor(StdDraw.RED);
+				} 
+				else {
+					StdDraw.setPenColor(StdDraw.BLUE);
+				}
+				StdDraw.point(allCitiesY.get(cityIndex), allCitiesX.get(cityIndex));
+			}
+		}
+	}
+
+	public static void main (String[] args) {
+		USMapWithCities3 map = new USMapWithCities3();
+
+	}
+}
